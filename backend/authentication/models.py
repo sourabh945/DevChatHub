@@ -17,11 +17,9 @@ class BaseUserManager(_BaseUserManager):
 
     def username_validator(self, username):
         """Validate the username of the user"""
-        try:
-            if not re.match(username_regex, username):
-                raise ValidationError("Invalid username")
-        except Exception as err:
-            raise err
+        if not re.match(username_regex, username):
+            raise ValidationError("Invalid username")
+
 
     def email_validator(self, email):
         """Validates the email address"""

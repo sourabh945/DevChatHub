@@ -37,6 +37,8 @@ class RegisterView(APIView):
                     }, status=status.HTTP_201_CREATED)
             except ValidationError as e:
                 return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            except Exception as e:
+                return Response({"error": "An error occurred during registration"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # Protected API view ( for Testing )
@@ -46,7 +48,7 @@ from rest_framework.response import Response
 class ProtectedTestView(APIView):
 
     def get(self, request):
-        return Response({"message": ["hello", request.user.id, request.user.username]}, status.HTTP_200_OK)
+        return Response({"message": ["hello", str(request.user.id), request.user.username]}, status.HTTP_200_OK)
 
 
 # Protected API view for changing password
@@ -54,7 +56,7 @@ class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
 
-    def change_password(self, user, **validated_data):
+    def change_password(self, user, validated_data):
        user.change_password(validated_data["old_password"], validated_data["new_password"]) #type: ignore
 
 
